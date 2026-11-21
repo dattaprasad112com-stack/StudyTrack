@@ -1,0 +1,70 @@
+
+{% extends 'planner/base.html' %}
+
+{% block title %}Edit Subject | StudyTrack{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="page-heading mb-1">Edit Subject ✏️</h2>
+    <p class="text-muted">Update your subject information.</p>
+</div>
+
+<div class="custom-card mx-auto" style="max-width: 650px;">
+
+    <div class="text-center mb-4">
+        <div class="text-primary" style="font-size: 50px;">
+            <i class="bi bi-pencil-square"></i>
+        </div>
+
+        <h4 class="fw-bold mt-2">Update Subject Details</h4>
+
+        <p class="text-muted">
+            Editing: {{ subject.name }}
+        </p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Subject Name</label>
+
+            <input
+                type="text"
+                name="name"
+                class="form-control"
+                value="{{ subject.name }}"
+                placeholder="Enter subject name"
+                required
+            >
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Description</label>
+
+            <textarea
+                name="description"
+                class="form-control"
+                rows="4"
+                placeholder="Enter subject description"
+            >{{ subject.description }}</textarea>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+
+            <button type="submit" class="btn btn-primary flex-grow-1">
+                <i class="bi bi-check-circle"></i> Update Subject
+            </button>
+
+            <a href="{% url 'subjects' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle"></i> Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,121 @@
+
+{% extends 'planner/base.html' %}
+
+{% block title %}Study Hours | StudyTrack{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h2 class="page-heading mb-1">My Study Hours 📚</h2>
+        <p class="text-muted mb-0">
+            Track your learning time and build consistent study habits.
+        </p>
+    </div>
+
+    <a href="{% url 'add_study_session' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Add Study Hours
+    </a>
+</div>
+
+<!-- TOTAL STUDY HOURS -->
+<div class="custom-card mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <p class="text-muted mb-2">Total Hours Studied</p>
+
+            <h1 class="display-5 fw-bold text-primary mb-2">
+                {{ total_hours }} <span class="fs-4">Hours</span>
+            </h1>
+
+            <p class="text-muted mb-0">
+                Keep learning and make every study session count!
+            </p>
+        </div>
+
+        <div class="col-md-4 text-md-end text-center mt-3 mt-md-0">
+            <i class="bi bi-clock-history text-primary"
+               style="font-size: 75px;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- STUDY HISTORY -->
+<div class="custom-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">
+            <i class="bi bi-journal-text text-primary"></i>
+            Study History
+        </h4>
+
+        <span class="badge text-bg-light">
+            {{ sessions|length }} Session{{ sessions|length|pluralize }}
+        </span>
+    </div>
+
+    {% if sessions %}
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Hours Studied</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for session in sessions %}
+                <tr>
+
+                    <td class="fw-semibold">
+                        <i class="bi bi-book text-primary me-2"></i>
+                        {{ session.subject.name }}
+                    </td>
+
+                    <td>
+                        <i class="bi bi-calendar3 text-muted me-1"></i>
+                        {{ session.date }}
+                    </td>
+
+                    <td>
+                        <span class="badge bg-primary">
+                            <i class="bi bi-clock"></i>
+                            {{ session.hours }} Hours
+                        </span>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+    {% else %}
+
+    <div class="text-center py-5">
+
+        <i class="bi bi-clock text-primary" style="font-size: 55px;"></i>
+
+        <h4 class="mt-3">No Study Hours Recorded</h4>
+
+        <p class="text-muted">
+            Start tracking your study time by adding your first study session.
+        </p>
+
+        <a href="{% url 'add_study_session' %}" class="btn btn-primary mt-2">
+            <i class="bi bi-plus-circle"></i> Add Study Hours
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

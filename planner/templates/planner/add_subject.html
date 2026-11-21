@@ -1,0 +1,69 @@
+
+{% extends 'planner/base.html' %}
+
+{% block title %}Add Subject | StudyTrack{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="page-heading mb-1">Add New Subject 📚</h2>
+    <p class="text-muted">Add a subject to organize your studies.</p>
+</div>
+
+<div class="custom-card mx-auto" style="max-width: 650px;">
+
+    <div class="text-center mb-4">
+        <div class="text-primary" style="font-size: 50px;">
+            <i class="bi bi-journal-plus"></i>
+        </div>
+        <h4 class="fw-bold mt-2">Subject Details</h4>
+        <p class="text-muted">Enter the information below.</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Subject Name</label>
+
+            <input
+                type="text"
+                name="name"
+                class="form-control"
+                placeholder="e.g. Python Programming"
+                required
+            >
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Description</label>
+
+            <textarea
+                name="description"
+                class="form-control"
+                rows="4"
+                placeholder="Write a short description about this subject..."
+            ></textarea>
+
+            <small class="text-muted">
+                Description is optional.
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+
+            <button type="submit" class="btn btn-primary flex-grow-1">
+                <i class="bi bi-check-circle"></i> Save Subject
+            </button>
+
+            <a href="{% url 'subjects' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

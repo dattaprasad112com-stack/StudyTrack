@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | StudyTrack</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #eef0ff, #f8f7ff);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(40, 50, 100, 0.10);
+        }
+
+        .logo-icon {
+            width: 65px;
+            height: 65px;
+            background: #eef0ff;
+            color: #4e5be8;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 15px;
+        }
+
+        .brand-name {
+            color: #19234d;
+            font-weight: 750;
+        }
+
+        .form-control {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #dce1ef;
+        }
+
+        .form-control:focus {
+            border-color: #4e5be8;
+            box-shadow: 0 0 0 3px rgba(78, 91, 232, 0.12);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #4e5be8, #7862e9);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .btn-login:hover {
+            color: white;
+            opacity: 0.92;
+        }
+
+        .register-link {
+            color: #4e5be8;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .register-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <div class="text-center mb-4">
+
+        <div class="logo-icon">
+            <i class="bi bi-book-half"></i>
+        </div>
+
+        <h2 class="brand-name">StudyTrack</h2>
+
+        <h5 class="mt-3 fw-semibold">Welcome Back!</h5>
+
+        <p class="text-muted">
+            Login to continue your learning journey.
+        </p>
+
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for field in form %}
+
+            <div class="mb-3">
+
+                <label class="form-label fw-semibold">
+                    {{ field.label }}
+                </label>
+
+               
+
+                {{ field }}
+
+                {% for error in field.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+
+            </div>
+
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-login w-100 mt-2">
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            Login to StudyTrack
+        </button>
+
+    </form>
+
+    <div class="text-center mt-4">
+        <p class="text-muted mb-0">
+            Don't have an account?
+            <a href="{% url 'register' %}" class="register-link">
+                Create Account
+            </a>
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>

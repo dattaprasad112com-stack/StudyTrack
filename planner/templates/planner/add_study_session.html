@@ -1,0 +1,100 @@
+
+{% extends 'planner/base.html' %}
+
+{% block title %}Add Study Hours | StudyTrack{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="page-heading mb-1">Add Study Hours 📚</h2>
+    <p class="text-muted">
+        Record your study sessions and track your learning time.
+    </p>
+</div>
+
+<div class="custom-card mx-auto" style="max-width: 650px;">
+
+    <div class="text-center mb-4">
+        <div class="text-primary" style="font-size: 50px;">
+            <i class="bi bi-clock-history"></i>
+        </div>
+
+        <h4 class="fw-bold mt-2">Study Session Details</h4>
+
+        <p class="text-muted">
+            Enter the details of your study session below.
+        </p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Select Subject</label>
+
+            <select name="subject" class="form-select" required>
+                <option value="">Choose Subject</option>
+
+                {% for subject in subjects %}
+                    <option value="{{ subject.id }}">
+                        {{ subject.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Study Date</label>
+
+            <input
+                type="date"
+                name="date"
+                class="form-control"
+                required
+            >
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Hours Studied</label>
+
+            <input
+                type="number"
+                name="hours"
+                class="form-control"
+                min="0.1"
+                max="999.9"
+                step="0.1"
+                placeholder="Example: 2.5"
+                required
+            >
+
+            <small class="text-muted">
+                You can enter decimal values, such as 1.5 or 2.5 hours.
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+
+            <button type="submit" class="btn btn-primary flex-grow-1">
+                <i class="bi bi-check-circle"></i> Save Study Hours
+            </button>
+
+            <a href="{% url 'study_hours' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

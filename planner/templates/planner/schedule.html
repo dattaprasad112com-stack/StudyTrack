@@ -1,0 +1,117 @@
+
+{% extends 'planner/base.html' %}
+
+{% block title %}Study Schedule | StudyTrack{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h2 class="page-heading mb-1">My Study Schedule 📅</h2>
+        <p class="text-muted mb-0">
+            Plan your study sessions and manage your time effectively.
+        </p>
+    </div>
+
+    <a href="{% url 'add_schedule' %}" class="btn btn-primary">
+        <i class="bi bi-calendar-plus"></i> Add Schedule
+    </a>
+</div>
+
+<!-- SCHEDULE OVERVIEW -->
+<div class="custom-card mb-4">
+    <div class="d-flex align-items-center gap-3">
+        <div class="text-primary fs-2">
+            <i class="bi bi-calendar-week"></i>
+        </div>
+        <div>
+            <h5 class="mb-1">Your Study Plans</h5>
+            <p class="text-muted mb-0">
+                You have {{ schedules|length }} scheduled session{{ schedules|length|pluralize }}.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- SCHEDULE TABLE -->
+{% if schedules %}
+
+<div class="custom-card">
+
+    <h5 class="fw-bold mb-4">
+        <i class="bi bi-clock-history text-primary"></i>
+        Schedule Details
+    </h5>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in schedules %}
+                <tr>
+                    <td class="fw-semibold">
+                        <i class="bi bi-bookmark text-primary me-2"></i>
+                        {{ item.title }}
+                    </td>
+
+                    <td>
+                        <span class="badge text-bg-light">
+                            {{ item.subject.name }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <i class="bi bi-calendar3 text-muted me-1"></i>
+                        {{ item.date }}
+                    </td>
+
+                    <td>
+                        <i class="bi bi-clock text-success me-1"></i>
+                        {{ item.start_time }}
+                    </td>
+
+                    <td>
+                        <i class="bi bi-clock text-danger me-1"></i>
+                        {{ item.end_time }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="custom-card text-center py-5">
+
+    <i class="bi bi-calendar-x text-primary" style="font-size: 55px;"></i>
+
+    <h4 class="mt-3">No Study Schedule Yet</h4>
+
+    <p class="text-muted">
+        You haven't created any study schedules. Start planning your learning time!
+    </p>
+
+    <a href="{% url 'add_schedule' %}" class="btn btn-primary mt-2">
+        <i class="bi bi-plus-circle"></i> Create Your First Schedule
+    </a>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

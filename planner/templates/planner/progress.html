@@ -1,0 +1,264 @@
+
+{% extends 'planner/base.html' %}
+
+{% block title %}Progress Report | StudyTrack{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h2 class="page-heading mb-1">Progress Report 📊</h2>
+        <p class="text-muted mb-0">
+            Track your study performance and achievements.
+        </p>
+    </div>
+
+    <a href="{% url 'home' %}" class="btn btn-outline-primary">
+        <i class="bi bi-house"></i> Dashboard
+    </a>
+</div>
+
+<!-- STATISTICS -->
+<div class="row g-4 mb-4">
+
+    <div class="col-sm-6 col-xl-4">
+        <div class="custom-card h-100">
+            <div class="text-primary fs-2">
+                <i class="bi bi-clipboard-data"></i>
+            </div>
+            <p class="text-muted mb-1">Total Tasks</p>
+            <div class="stat-number">{{ total_tasks }}</div>
+            <small class="text-muted">All study tasks</small>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-4">
+        <div class="custom-card h-100">
+            <div class="text-success fs-2">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <p class="text-muted mb-1">Completed Tasks</p>
+            <div class="stat-number text-success">{{ completed_tasks }}</div>
+            <small class="text-muted">Successfully completed</small>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-4">
+        <div class="custom-card h-100">
+            <div class="text-warning fs-2">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <p class="text-muted mb-1">Pending Tasks</p>
+            <div class="stat-number text-warning">{{ pending_tasks }}</div>
+            <small class="text-muted">Tasks remaining</small>
+        </div>
+    </div>
+
+</div>
+
+<!-- OVERALL PROGRESS -->
+<div class="custom-card mb-4">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">Overall Completion</h4>
+            <p class="text-muted mb-0">Your overall study task progress</p>
+        </div>
+
+        <h3 class="text-success fw-bold mb-0">
+            {{ completion_percentage }}%
+        </h3>
+    </div>
+
+    <div class="progress mt-4" style="height: 18px;">
+        <div
+            class="progress-bar bg-success"
+            id="completionBar"
+            role="progressbar"
+            style="width: 0%;"
+            aria-valuenow="{{ completion_percentage }}"
+            aria-valuemin="0"
+            aria-valuemax="100">
+        </div>
+    </div>
+
+</div>
+
+<!-- CHARTS -->
+<div class="row g-4 mb-4">
+
+    <div class="col-lg-6">
+        <div class="custom-card h-100">
+            <h5 class="fw-bold mb-4">
+                <i class="bi bi-pie-chart text-primary"></i>
+                Task Completion
+            </h5>
+
+            <div style="position: relative; height: 300px;">
+                <canvas id="taskChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="custom-card h-100">
+            <h5 class="fw-bold mb-4">
+                <i class="bi bi-bar-chart text-primary"></i>
+                Subject-wise Progress
+            </h5>
+
+            <div style="position: relative; height: 300px;">
+                <canvas id="subjectChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- SUBJECT DETAILS -->
+<div class="custom-card">
+
+    <h4 class="fw-bold mb-4">
+        <i class="bi bi-journal-check text-primary"></i>
+        Subject Progress Details
+    </h4>
+
+    {% if subject_data %}
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Total Tasks</th>
+                    <th>Completed</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in subject_data %}
+                <tr>
+                    <td class="fw-semibold">{{ item.name }}</td>
+                    <td>{{ item.total }}</td>
+                    <td>
+                        <span class="text-success fw-semibold">
+                            {{ item.completed }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if item.total > 0 %}
+                            {% widthratio item.completed item.total 100 %}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+    {% else %}
+
+    <div class="text-center py-4">
+        <i class="bi bi-bar-chart text-primary" style="font-size: 45px;"></i>
+        <p class="text-muted mt-3">
+            Add subjects and study tasks to see your progress.
+        </p>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{{ subject_data|json_script:"subject-data" }}
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    // OVERALL COMPLETION PROGRESS
+
+    const completion = Number("{{ completion_percentage }}");
+
+    document.getElementById("completionBar").style.width =
+        completion + "%";
+
+
+    // TASK COMPLETION CHART
+
+    const completedTasks = Number("{{ completed_tasks }}");
+    const pendingTasks = Number("{{ pending_tasks }}");
+
+    new Chart(document.getElementById('taskChart'), {
+        type: 'doughnut',
+
+        data: {
+            labels: ['Completed', 'Pending'],
+
+            datasets: [{
+                data: [completedTasks, pendingTasks],
+                backgroundColor: ['#16a34a', '#f59e0b'],
+                borderWidth: 1
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+
+    // SUBJECT-WISE PROGRESS CHART
+
+    const subjectData = JSON.parse(
+        document.getElementById('subject-data').textContent
+    );
+
+    new Chart(document.getElementById('subjectChart'), {
+        type: 'bar',
+
+        data: {
+            labels: subjectData.map(item => item.name),
+
+            datasets: [{
+                label: 'Completed Tasks',
+                data: subjectData.map(item => item.completed),
+                backgroundColor: '#2563eb'
+            }, {
+                label: 'Pending Tasks',
+                data: subjectData.map(
+                    item => item.total - item.completed
+                ),
+                backgroundColor: '#f59e0b'
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+
+</script>
+
+{% endblock %}
